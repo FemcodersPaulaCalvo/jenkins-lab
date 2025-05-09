@@ -1,0 +1,18 @@
+pipeline {
+agent any
+
+stages {
+    stage('Build') {
+        steps {
+            echo '1. Build step'
+            sh 'docker build --no-cache -t jenkins-custom -f Dockerfile .'
+        }
+    }
+    stage('Deploy') {
+        steps {
+            echo '2. Deploy step'
+            sh 'docker run -v jenkins-data:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -v /usr/local/bin/docker:/usr/local/bin/docker -it --rm --name jenkins-cicd -p 8080:8080 -p 50000:50000 jenkins-custom'
+        }
+    }
+  }
+}
